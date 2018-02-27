@@ -12,7 +12,7 @@ class Call(models.Model):
 
     identifier = models.UUIDField(default=uuid.uuid4, editable=False)
     source = models.CharField(
-        max_length=9,
+        max_length=11,
         validators=[
             RegexValidator(
                 regex=r'^(\d{2})(\d{8,9})$',
@@ -22,7 +22,7 @@ class Call(models.Model):
         ]
     )
     destination = models.CharField(
-        max_length=9,
+        max_length=11,
         validators=[
             RegexValidator(
                 regex=r'^(\d{2})(\d{8,9})$',
