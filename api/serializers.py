@@ -20,7 +20,11 @@ class CallSerializer(serializers.ModelSerializer):
         ret.update({'call_start': instance.starts_at.timestamp})
 
         if instance.has_ended:
-            ret.update({'call_end': instance.ends_at.timestamp})
+            ret.update({
+                'call_end': instance.ends_at.timestamp,
+                'price': instance.price,
+                'duration': instance.get_duration_display()
+            })
 
         return ret
 

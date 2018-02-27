@@ -56,6 +56,14 @@ class Call(models.Model):
         """Register a call end record."""
         EndRecord.objects.create(call=self)
 
+    def get_duration_display(self):
+        if self.duration:
+            secs = round(self.duration.total_seconds())
+            hours = int(secs / 3600)
+            minutes = int(secs / 60) % 60
+
+            return "{0}h{1}m{2}s".format(hours, minutes, secs)
+
     @property
     def has_ended(self):
         return hasattr(self, 'ends_at')
@@ -95,18 +103,17 @@ class EndRecord(models.Model):
         return str(self.call.identifier)
 
     def save(self, *args, **kwargs):
-        is_new = self.pk is None
+        super(EndRecord, self).save(*args, **kwargs)
 
-        if is_new:
+        if not self.call.duration and not self.call.price:
             self._calculate_call_duration()
-            self._calculate_call_cost()
-
-        return super(EndRecord, self).save(*args, **kwargs)
+            self._calculate_call_price()
 
     def _calculate_call_duration(self):
         """Calculate a call duration."""
-        pass
+        self.call.duration = self.timestamp - self.call.starts_at.timestamp
+        self.call.save()
 
-    def _calculate_call_cost(self):
-        """Calculte the cost of a call record."""
+    def _calculate_call_price(self):
+        """Calculte the price of a call record."""
         pass
