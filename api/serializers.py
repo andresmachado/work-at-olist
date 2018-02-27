@@ -8,10 +8,11 @@ class CallSerializer(serializers.ModelSerializer):
         model = Call
         fields = ('identifier', 'source', 'destination')
         read_only_fields = ('identifier', )
-        lookup_field = 'identifier'
 
     def create(self, validated_data):
-        return validated_data
+        instance = super(CallSerializer, self).create(validated_data)
+        instance.start_call()
+        return instance
 
     def to_representation(self, instance):
         ret = super(CallSerializer, self).to_representation(instance)

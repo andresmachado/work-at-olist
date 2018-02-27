@@ -42,18 +42,26 @@ class Call(models.Model):
 
     def __str__(self):
         """str representation of Call."""
-        pass
+        return str(self.identifier)
 
     @classmethod
     def get_phone_bill(cls, phone):
         pass
 
+    def start_call(self):
+        """Register a call start record."""
+        StartRecord.objects.create(call=self)
+
+    def end_call(self):
+        """Register a call end record."""
+        EndRecord.objects.create(call=self)
+
     @property
     def has_ended(self):
-        return self.ends_at.exists()
+        return hasattr(self, 'ends_at')
 
 
-class Start(models.Model):
+class StartRecord(models.Model):
     """Model definition for Start record."""
 
     call = models.OneToOneField(Call, related_name='starts_at')
@@ -67,10 +75,10 @@ class Start(models.Model):
 
     def __str__(self):
         """String representation of Start record."""
-        pass
+        return str(self.call.identifier)
 
 
-class End(models.Model):
+class EndRecord(models.Model):
     """Model definition for End record."""
 
     call = models.OneToOneField(Call, related_name='ends_at')
@@ -84,7 +92,7 @@ class End(models.Model):
 
     def __str__(self):
         """String representation of End record."""
-        pass
+        return str(self.call.identifier)
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
@@ -93,7 +101,7 @@ class End(models.Model):
             self._calculate_call_duration()
             self._calculate_call_cost()
 
-        return super(End, self).save(*args, **kwargs)
+        return super(EndRecord, self).save(*args, **kwargs)
 
     def _calculate_call_duration(self):
         """Calculate a call duration."""
