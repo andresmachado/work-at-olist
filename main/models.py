@@ -58,7 +58,6 @@ class Call(models.Model):
             timestamp: Time moment when the call has started. 
         """
         record = StartRecord(call=self)
-        import ipdb; ipdb.set_trace()
         if timestamp:
             record.timestamp = timestamp
 
@@ -72,7 +71,6 @@ class Call(models.Model):
             timestamp: Time moment when the call has ended.
         """
         record = EndRecord(call=self)
-        import ipdb; ipdb.set_trace()
         if timestamp:
             record.timestamp = parse_datetime(timestamp)
 
