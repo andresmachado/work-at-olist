@@ -70,11 +70,17 @@ class Call(models.Model):
         Args:
             timestamp: Time moment when the call has ended.
         """
-        record = EndRecord(call=self)
         if timestamp:
-            record.timestamp = parse_datetime(timestamp)
+            timestamp = datetime.datetime.strptime(timestamp, '%Y-%m-%d:%H:%M:%S')
+        else:
+            timestamp = timezone.now()
 
-        record.save()
+        data = {
+            'call': self,
+            'timestamp': timestamp
+        }
+        
+        EndRecord.objects.create(**data)
 
     def get_duration_display(self):
         """Friendly representation of the duration field."""

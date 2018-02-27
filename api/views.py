@@ -31,7 +31,7 @@ class CallViewSet(viewsets.ModelViewSet):
         timestamp = request.query_params.get('timestamp', None)
 
         if not call.has_ended:
-            call.end_call(timestamp)
+            call.end_call(timestamp=timestamp)
 
         serializer = self.serializer_class(instance=call)
         return Response(serializer.data)
