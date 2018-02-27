@@ -4,14 +4,18 @@ from main.models import Call
 
 
 class CallSerializer(serializers.ModelSerializer):
+    timestamp = serializers.DateTimeField(write_only=True, required=False)
+
     class Meta:
         model = Call
-        fields = ('identifier', 'source', 'destination')
+        fields = ('identifier', 'source', 'destination', 'timestamp')
         read_only_fields = ('identifier', )
 
     def create(self, validated_data):
+        timestamp = validated_data.pop('timestamp', None)
+
         instance = super(CallSerializer, self).create(validated_data)
-        instance.start_call()
+        instance.start_call(timestamp)
         return instance
 
     def to_representation(self, instance):

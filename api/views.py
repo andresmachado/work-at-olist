@@ -28,9 +28,10 @@ class CallViewSet(viewsets.ModelViewSet):
     def end_call(self, request, identifier=None):
         """End a given call."""
         call = self.get_object()
+        timestamp = request.query_params.get('timestamp', None)
 
         if not call.has_ended:
-            call.end_call()
+            call.end_call(timestamp)
 
         serializer = self.serializer_class(instance=call)
         return Response(serializer.data)

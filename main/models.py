@@ -3,6 +3,8 @@ import datetime
 
 from django.db import models
 from django.core.validators import RegexValidator
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 
 # Create your models here.
 
@@ -48,24 +50,47 @@ class Call(models.Model):
     def get_phone_bill(cls, phone):
         pass
 
-    def start_call(self):
-        """Register a call start record."""
-        StartRecord.objects.create(call=self)
+    def start_call(self, timestamp):
+        """
+        Register a call start record.
 
-    def end_call(self):
-        """Register a call end record."""
-        EndRecord.objects.create(call=self)
+        Args:
+            timestamp: Time moment when the call has started. 
+        """
+        record = StartRecord(call=self)
+        import ipdb; ipdb.set_trace()
+        if timestamp:
+            record.timestamp = timestamp
+
+        record.save()
+
+    def end_call(self, timestamp):
+        """
+        Register a call end record.
+
+        Args:
+            timestamp: Time moment when the call has ended.
+        """
+        record = EndRecord(call=self)
+        import ipdb; ipdb.set_trace()
+        if timestamp:
+            record.timestamp = parse_datetime(timestamp)
+
+        record.save()
 
     def get_duration_display(self):
+        """Friendly representation of the duration field."""
         if self.duration:
-            secs = round(self.duration.total_seconds())
-            hours = int(secs / 3600)
-            minutes = int(secs / 60) % 60
+            total_secs = round(self.duration.total_seconds())
+            hours = int(total_secs / 3600)
+            minutes = int(total_secs / 60) % 60
+            secs = int(total_secs % 60)
 
             return "{0}h{1}m{2}s".format(hours, minutes, secs)
 
     @property
     def has_ended(self):
+        """Check whether a call has ended."""
         return hasattr(self, 'ends_at')
 
 
@@ -73,7 +98,7 @@ class StartRecord(models.Model):
     """Model definition for Start record."""
 
     call = models.OneToOneField(Call, related_name='starts_at')
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(default=timezone.now)
 
     class Meta:
         """Meta definition for Start."""
@@ -90,7 +115,7 @@ class EndRecord(models.Model):
     """Model definition for End record."""
 
     call = models.OneToOneField(Call, related_name='ends_at')
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(default=timezone.now)
 
     class Meta:
         """Meta definition for End."""
