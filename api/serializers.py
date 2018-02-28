@@ -20,7 +20,6 @@ class CallSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         ret = super(CallSerializer, self).to_representation(instance)
-
         ret.update({'call_start': instance.starts_at.timestamp})
 
         if instance.has_ended:

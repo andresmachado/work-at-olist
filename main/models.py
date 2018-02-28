@@ -1,10 +1,13 @@
 import uuid
-import datetime
+import time as t
 
+from datetime import datetime, timedelta, time
+from decimal import Decimal
 from django.db import models
 from django.core.validators import RegexValidator
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
+
 
 # Create your models here.
 
@@ -12,7 +15,12 @@ from django.utils.dateparse import parse_datetime
 class Call(models.Model):
     """Model definition for Call."""
 
+    STANDING_CHARGE = 0.36
+    PER_MINUTE_CHARGE = 0.09
+
     identifier = models.UUIDField(default=uuid.uuid4, editable=False)
+    price = models.DecimalField(max_digits=19, decimal_places=2, default=0)
+    duration = models.DurationField(default=timedelta(minutes=0))
     source = models.CharField(
         max_length=11,
         validators=[
@@ -33,9 +41,7 @@ class Call(models.Model):
             ),
         ]
     )
-    price = models.DecimalField(max_digits=19, decimal_places=2, default=0)
-    duration = models.DurationField(default=datetime.timedelta(minutes=0))
-
+    
     class Meta:
         """Meta definition for Call."""
 
@@ -71,7 +77,9 @@ class Call(models.Model):
             timestamp: Time moment when the call has ended.
         """
         if timestamp:
-            timestamp = datetime.datetime.strptime(timestamp, '%Y-%m-%d:%H:%M:%S')
+            timestamp = parse_datetime(timestamp)
+            if timestamp < self.starts_at.timestamp:
+                raise ValueError('End call timestamp cannot be in the past.')
         else:
             timestamp = timezone.now()
 
@@ -79,7 +87,7 @@ class Call(models.Model):
             'call': self,
             'timestamp': timestamp
         }
-        
+
         EndRecord.objects.create(**data)
 
     def get_duration_display(self):
@@ -143,6 +151,46 @@ class EndRecord(models.Model):
         self.call.duration = self.timestamp - self.call.starts_at.timestamp
         self.call.save()
 
+    def _get_minutes_between(self, start, end):
+        """Return difference between a interval in minutes."""
+        diff = end - start
+        diff_minutes = (diff.days * 24 * 60) + round(diff.seconds / 60)
+
+        if diff_minutes < 0 or start > end:
+            return 0
+        return diff_minutes
+
+    def _daterange(self, start_date, end_date):
+        """Create a iterable in a given date range."""
+        for num in range(int((end_date - start_date).days + 1)):
+            yield start_date + timedelta(num)
+
     def _calculate_call_price(self):
         """Calculte the price of a call record."""
-        pass
+        start, ends = self.call.starts_at.timestamp, self.timestamp
+        total_minutes = 0
+        not_billable_minutes = 0
+
+        for dt in self._daterange(start, ends):
+            start_hour = datetime.combine(dt.date(), time(5, 59))
+            end_hour = datetime.combine(dt.date(), time(21, 59))
+
+            if dt.date() == start.date():
+                threshold_start = start
+                not_billable_minutes += self._get_minutes_between(threshold_start, start_hour)
+            else:
+                threshold_start = start_hour
+
+            if dt.date() == ends.date():
+                threshold_end = ends
+                not_billable_minutes += self._get_minutes_between(end_hour, threshold_end)
+            else:
+                threshold_end = end_hour
+
+            total_minutes += self._get_minutes_between(threshold_start, threshold_end)
+
+        total_price = ((total_minutes - not_billable_minutes) * Call.PER_MINUTE_CHARGE) + Call.STANDING_CHARGE
+
+        self.call.price = Decimal(total_price)
+        self.call.save()
+

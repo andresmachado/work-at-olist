@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, serializers
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
@@ -30,8 +30,11 @@ class CallViewSet(viewsets.ModelViewSet):
         call = self.get_object()
         timestamp = request.query_params.get('timestamp', None)
 
-        if not call.has_ended:
-            call.end_call(timestamp=timestamp)
+        try:
+            if not call.has_ended:
+                call.end_call(timestamp=timestamp)
+        except ValueError as exc:
+            raise serializers.ValidationError(str(exc))
 
         serializer = self.serializer_class(instance=call)
         return Response(serializer.data)
