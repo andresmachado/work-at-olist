@@ -189,8 +189,10 @@ class EndRecord(models.Model):
 
             total_minutes += self._get_minutes_between(threshold_start, threshold_end)
 
-        total_price = ((total_minutes - not_billable_minutes) * Call.PER_MINUTE_CHARGE) + Call.STANDING_CHARGE
+        final_minutes = total_minutes - not_billable_minutes
+        if final_minutes < 0:
+            final_minutes = 0
+        total_price = (final_minutes * Call.PER_MINUTE_CHARGE) + Call.STANDING_CHARGE
 
         self.call.price = Decimal(total_price)
         self.call.save()
-
