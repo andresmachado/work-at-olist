@@ -1,5 +1,4 @@
 import uuid
-import time as t
 
 from datetime import datetime, timedelta, time
 from decimal import Decimal
@@ -41,7 +40,7 @@ class Call(models.Model):
             ),
         ]
     )
-    
+
     class Meta:
         """Meta definition for Call."""
 
@@ -61,7 +60,7 @@ class Call(models.Model):
         Register a call start record.
 
         Args:
-            timestamp: Time moment when the call has started. 
+            timestamp: Time moment when the call has started.
         """
         record = StartRecord(call=self)
         if timestamp:

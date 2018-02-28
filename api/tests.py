@@ -6,7 +6,6 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from main.models import Call
-from .serializers import CallSerializer
 
 
 # Create your tests here.
