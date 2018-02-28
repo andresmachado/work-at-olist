@@ -33,7 +33,7 @@ class CallTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Call.objects.count(), 1)
 
-    def test_call_must_have_started(self):
+    def test_call_should_not_has_ended(self):
         url = reverse('call-list')
 
         response = self.client.post(url, self.call_data, format='json')
