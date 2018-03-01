@@ -1,9 +1,10 @@
 from datetime import date, timedelta
+
 from django.db.models import Sum
 
-from rest_framework import serializers
-
 from main.models import Call
+
+from rest_framework import serializers
 
 
 class CallSerializer(serializers.ModelSerializer):

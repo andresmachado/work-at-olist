@@ -1,9 +1,9 @@
 import uuid
-
-from datetime import datetime, timedelta, time
+from datetime import datetime, time, timedelta
 from decimal import Decimal
-from django.db import models
+
 from django.core.validators import RegexValidator
+from django.db import models
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 
