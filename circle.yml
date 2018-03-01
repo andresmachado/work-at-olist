@@ -11,4 +11,4 @@ test:
   pre:
     - ./cc-test-reporter before-build
   override:
-    - python manage.py test; ./cc-test-reporter after-build --exit-code $?
+    - python manage.py test; ./cc-test-reporter after-build -t coverage.py --exit-code $?
