@@ -51,10 +51,6 @@ class Call(models.Model):
         """str representation of Call."""
         return str(self.identifier)
 
-    @classmethod
-    def get_phone_bill(cls, phone):
-        pass
-
     def start_call(self, timestamp):
         """
         Register a call start record.
