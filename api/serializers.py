@@ -45,10 +45,10 @@ class CallSerializer(serializers.ModelSerializer):
 
 
 class CallDetailSerializer(serializers.ModelSerializer):
-    start_time = serializers.DateTimeField(source='starts_at__timestamp')
-    end_time = serializers.DateTimeField(source='ends_at__timestamp')
+    start_time = serializers.SerializerMethodField()
+    end_time = serializers.SerializerMethodField()
     duration = serializers.SerializerMethodField()
-    price = serializers.FloatField(source='price')
+    price = serializers.FloatField()
 
     class Meta:
         model = Call
@@ -56,8 +56,14 @@ class CallDetailSerializer(serializers.ModelSerializer):
             'destination', 'start_time', 'end_time', 'duration', 'price'
         )
 
-    def get_duration_field(self, obj):
+    def get_duration(self, obj):
         return obj.get_duration_display()
+
+    def get_start_time(self, obj):
+        return obj.starts_at.timestamp
+
+    def get_end_time(self, obj):
+        return obj.ends_at.timestamp
 
 
 class PhoneBillSerializer(serializers.Serializer):
