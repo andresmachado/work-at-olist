@@ -10,6 +10,9 @@ shell:
 migrations:
 	python manage.py makemigrations
 
+test:
+	python manage.py test --verbosity=2
+
 build: migrations migrate
 
 clean:
