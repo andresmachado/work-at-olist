@@ -7,15 +7,14 @@ This app implements the app requested at [Work at Olist challenge](https://githu
 ## Installing and test instructions
 
 1. Clone this repo to your local machine
-2. Run `pip install requirements.txt`
-3. After installing all requirements, you should run `make build`
+2. After cloning, you should run `make build`
 4. Then `make run` and we're good to go
 
 > Obs. The db.sqlite3 file within this repository contains some data that can be tested.
 
 ## Running the tests
 
-Just `./manage.py test api` - all tests should pass.
+Just `make test` - all tests should pass.
 
 ## Heroku app
 
