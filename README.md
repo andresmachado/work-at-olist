@@ -1,6 +1,6 @@
 # Work at Olist - Call Management App
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/b06a048c737cafabf4c9/maintainability)](https://codeclimate.com/github/andresmachado/work-at-olist/maintainability)s
+[![Maintainability](https://api.codeclimate.com/v1/badges/b06a048c737cafabf4c9/maintainability)](https://codeclimate.com/github/andresmachado/work-at-olist/maintainability)
 
 This app implements the logical requested at [Work at Olist challenge](https://github.com/olist/work-at-olist)
 
@@ -31,7 +31,7 @@ You can access the brief API documentation at `{base_url}/docs/`
 
 To start a call, just send a POST to `{base_url}/calls` containing the data below
 
-```json
+```
 {
     "source":  // Source phone number following the format AAXXXXXXXXX
     "destination": // Destination number following the format AAXXXXXXXXX
@@ -45,7 +45,7 @@ You will receive a response containing the identifier for your call which must b
 
 To end a call, send a *PUT* request to `{base_url}/calls/{identifier}/end-call/` containing the data below
 
-```json
+```
 {
     "identifier":  // Identifier of the call
     "timestamp": // The timestamp of when the call has_ended.
