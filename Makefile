@@ -16,8 +16,8 @@ clean:
 	@find . -name ".DS_Store" -delete
 	@find . -name "*.pyc" -delete
 
-push_production:
-	git push cbdashboard master
+deploy:
+	git push heroku master
 
-migrate_production:
-	heroku run --app=cbdashboard python manage.py migrate
+migrate_heroku:
+	heroku run --app=call-management python manage.py migrate

@@ -72,13 +72,13 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'olist.wsgi.application'
+WSGI_APPLICATION = 'olist.wsgi_heroku.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {'default': dj_database_url.config()}
+DATABASES = {'default': dj_database_url.config('DATABASE_URL')}
 
 
 # Password validation
