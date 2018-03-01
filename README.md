@@ -1,5 +1,7 @@
 # Work at Olist - Call Management App
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/b06a048c737cafabf4c9/maintainability)](https://codeclimate.com/github/andresmachado/work-at-olist/maintainability)s
+
 This app implements the logical requested at [Work at Olist challenge](https://github.com/olist/work-at-olist)
 
 ## Installing and test instructions
