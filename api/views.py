@@ -43,7 +43,7 @@ class CallViewSet(viewsets.ModelViewSet):
 
 class BillView(APIView):
     """
-    Return a report containing total and detailed costs for a given 'phone'. 
+    Return a report containing total and detailed costs for a given 'phone'.
 
     Args:
         phone: The subscriber for the bill report.
