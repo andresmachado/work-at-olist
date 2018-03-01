@@ -41,6 +41,18 @@ class CallTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Call.objects.count(), 1)
 
+    def test_create_call_record_without_timestamp(self):
+        url = reverse('call-list')
+
+        call_data = {
+            "source": '47987987987',
+            "destination": '19123123123'
+        }
+
+        response = self.client.post(url, call_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Call.objects.count(), 1)
+
     def test_call_should_not_has_ended(self):
         url = reverse('call-list')
 
@@ -70,6 +82,22 @@ class CallTests(APITestCase):
         self.assertCountEqual(response.data.keys(), self.assert_keys)
         self.assertEqual(response.data['duration'], "0h6m10s")
 
+    def test_end_call_without_timestamp(self):
+        url = reverse('call-list')
+
+        started_call = self.client.post(url, self.call_data, format='json')
+        identifier = started_call.data.get('identifier')
+
+        end_call_url = '/api/v1/calls/{0}/end-call/'.format(identifier)
+
+        end_call_data = {
+            'identifier': identifier,
+        }
+
+        response = self.client.put(end_call_url, end_call_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertCountEqual(response.data.keys(), self.assert_keys)
+
     def test_call_should_not_end_in_past(self):
         url = reverse('call-list')
 
@@ -92,7 +120,6 @@ class CallTests(APITestCase):
         url = reverse('call-list')
 
         self.call_data.update({'source': '90033399'})
-
         response = self.client.post(url, self.call_data, format='json')
 
         msg = response.data['source'][0]
@@ -124,3 +151,38 @@ class CallTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertCountEqual(response.data, ['non_field_errors'])
         self.assertEqual(msg, 'The phone numbers must be different.')
+
+    def test_ongoing_call_detail(self):
+        url = reverse('call-list')
+
+        start_call = self.client.post(url, self.call_data, format='json')
+        identifier = start_call.data.get('identifier')
+
+        detail_url = reverse('call-detail', kwargs={'identifier': identifier})
+        response = self.client.get(detail_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotEqual(response.data, ['call_end', 'price', 'duration'])
+
+    def test_ended_call_detail(self):
+        url = reverse('call-list')
+        end_call_data = {
+            'identifier': '',
+            'timestamp': "2018-02-27T21:03:23"
+        }
+
+        start_call = self.client.post(url, self.call_data, format='json')
+        identifier = start_call.data.get('identifier')
+
+        end_call_url = '/api/v1/calls/{0}/end-call/'.format(identifier)
+        end_call_data.update({'identifier': identifier})
+
+        self.client.put(end_call_url, end_call_data, format='json')
+
+        detail_url = reverse('call-detail', kwargs={'identifier': identifier})
+        call_obj = Call.objects.get(identifier=identifier)
+        response = self.client.get(detail_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertCountEqual(response.data, self.assert_keys)
+        self.assertEqual(call_obj.has_ended, True)

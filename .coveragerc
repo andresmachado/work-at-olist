@@ -1,0 +1,10 @@
+[run]
+omit =
+    **/migrations/*
+    **/__init__.py
+    **/olist/*
+
+[paths]
+source =
+    api/
+    main/
