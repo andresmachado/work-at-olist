@@ -25,7 +25,7 @@ class Call(models.Model):
         validators=[
             RegexValidator(
                 regex=r'^(\d{2})(\d{8,9})$',
-                message='Phone numbers must have 8-9 digits and must be in format AAXXXXXXXXX',
+                message='Phone numbers must have 8-9 digits and must be in format AAXXXXXXXXX.',
                 code='invalid_phone_number'
             ),
         ]
@@ -35,7 +35,7 @@ class Call(models.Model):
         validators=[
             RegexValidator(
                 regex=r'^(\d{2})(\d{8,9})$',
-                message='Phone numbers must have 8-9 digits and must be in format AAXXXXXXXXX',
+                message='Phone numbers must have 8-9 digits and must be in format AAXXXXXXXXX.',
                 code='invalid_phone_number'
             ),
         ]

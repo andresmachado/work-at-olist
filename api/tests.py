@@ -87,3 +87,40 @@ class CallTests(APITestCase):
         msg = response.data[0]
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(msg, 'End call timestamp cannot be in the past.')
+
+    def test_start_call_with_wrong_source_number(self):
+        url = reverse('call-list')
+
+        self.call_data.update({'source': '90033399'})
+
+        response = self.client.post(url, self.call_data, format='json')
+
+        msg = response.data['source'][0]
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            msg, 'Phone numbers must have 8-9 digits and must be in format AAXXXXXXXXX.')
+
+    def test_start_call_with_wrong_destination_number(self):
+        url = reverse('call-list')
+
+        self.call_data.update({'destination': '90033399'})
+
+        response = self.client.post(url, self.call_data, format='json')
+        msg = response.data['destination'][0]
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            msg, 'Phone numbers must have 8-9 digits and must be in format AAXXXXXXXXX.')
+
+    def test_start_call_with_same_numbers(self):
+        url = reverse('call-list')
+
+        self.call_data.update({'destination': '47987987987'})
+
+        response = self.client.post(url, self.call_data, format='json')
+        msg = response.data['non_field_errors'][0]
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertCountEqual(response.data, ['non_field_errors'])
+        self.assertEqual(msg, 'The phone numbers must be different.')

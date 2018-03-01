@@ -10,10 +10,13 @@ shell:
 migrations:
 	python manage.py makemigrations
 
+requirements:
+	pip install -r requirements.txt
+
 test:
 	python manage.py test --verbosity=2
 
-build: migrations migrate
+build: requirements migrations migrate
 
 clean:
 	@find . -name ".DS_Store" -delete
