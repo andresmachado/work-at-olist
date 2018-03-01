@@ -57,7 +57,7 @@ As response, you will receive a json containing the *duration* and the *cost* of
 
 ## Getting a bill report
 
-To get a bill report, send a *GET* request to `{base_url}/bills/` informing the `?telephone` and optionally `&period` params, if `&period` won't be informd, will assume the last closed period.
+To get a bill report, send a *GET* request to `{base_url}/bills/` informing the `?phone` and optionally `&period` params, if `&period` won't be informd, will assume the last closed period.
 
 ## Environment briefing
 
