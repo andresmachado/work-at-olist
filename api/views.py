@@ -42,6 +42,13 @@ class CallViewSet(viewsets.ModelViewSet):
 
 
 class BillView(APIView):
+    """
+    Return a report containing total and detailed costs for a given 'phone'. 
+
+    Args:
+        phone: The subscriber for the bill report.
+        period (optional): Period that should be considered.
+    """
     serializer_class = PhoneBillSerializer
 
     def get(self, request):

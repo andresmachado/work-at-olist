@@ -79,9 +79,9 @@ class PhoneBillSerializer(serializers.Serializer):
 
     def validate_period(self, value):
         today = date.today()
-        if value.month >= today.month:
+        if value.month >= today.month and value.year >= today.year:
             raise serializers.ValidationError(
-                'The month does not have a closed period yet'
+                'The period does not represent a closed period.'
             )
         return value
 
