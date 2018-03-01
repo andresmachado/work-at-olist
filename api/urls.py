@@ -12,4 +12,5 @@ router.register('calls', views.CallViewSet)
 urlpatterns = [
     url(r'docs/$', schema_view),
     url(r'^', include(router.urls)),
+    url('^bill/$', views.BillView.as_view(), name='call_bill')
 ]

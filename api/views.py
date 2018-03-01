@@ -1,9 +1,10 @@
-from rest_framework import viewsets, serializers
+from rest_framework import viewsets, serializers, status
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from main.models import Call
-from .serializers import CallSerializer
+from .serializers import CallSerializer, PhoneBillSerializer
 
 
 # Create your views here.
@@ -24,11 +25,11 @@ class CallViewSet(viewsets.ModelViewSet):
     serializer_class = CallSerializer
     lookup_field = 'identifier'
 
-    @detail_route(methods=['get'], url_path='end-call')
+    @detail_route(methods=['put'], url_path='end-call')
     def end_call(self, request, identifier=None):
         """End a given call."""
         call = self.get_object()
-        timestamp = request.query_params.get('timestamp', None)
+        timestamp = request.data.get('timestamp', None)
 
         try:
             if not call.has_ended:
@@ -37,4 +38,13 @@ class CallViewSet(viewsets.ModelViewSet):
             raise serializers.ValidationError(str(exc))
 
         serializer = self.serializer_class(instance=call)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class BillView(APIView):
+    serializer_class = PhoneBillSerializer
+
+    def get(self, request):
+        serializer = self.serializer_class(data=request.query_params)
+        if serializer.is_valid(raise_exception=True):
+            return Response(serializer.data)

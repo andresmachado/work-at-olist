@@ -28,7 +28,7 @@ class CallSerializer(serializers.ModelSerializer):
         if instance.has_ended:
             ret.update({
                 'call_end': instance.ends_at.timestamp,
-                'price': instance.price,
+                'price': round(instance.price, 2),
                 'duration': instance.get_duration_display()
             })
 
@@ -69,7 +69,7 @@ class PhoneBillSerializer(serializers.Serializer):
         default=date(date.today().year, date.today().month, 1) - timedelta(days=1)
     )
     total_cost = serializers.SerializerMethodField()
-    detailed_cost = serializers.SerializerMethodField()
+    detailed_calls = serializers.SerializerMethodField()
 
     def validate_period(self, value):
         today = date.today()
@@ -91,7 +91,7 @@ class PhoneBillSerializer(serializers.Serializer):
         total_calls = self._get_phone_records(data)
         return total_calls.aggregate(Sum('price'))['price__sum'] or 0.00
 
-    def get_detailed_cost(self, data):
+    def get_detailed_calls(self, data):
         total_calls = self._get_phone_records(data)
         result = [CallDetailSerializer(call).data for call in total_calls]
         return result
