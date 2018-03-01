@@ -1,6 +1,8 @@
 # Work at Olist - Call Management App
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/b06a048c737cafabf4c9/maintainability)](https://codeclimate.com/github/andresmachado/work-at-olist/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/b06a048c737cafabf4c9/test_coverage)](https://codeclimate.com/github/andresmachado/work-at-olist/test_coverage)
+[![CircleCI](https://circleci.com/gh/andresmachado/work-at-olist.svg?style=svg)](https://circleci.com/gh/andresmachado/work-at-olist)
 
 This app implements the app requested at [Work at Olist challenge](https://github.com/olist/work-at-olist)
 
