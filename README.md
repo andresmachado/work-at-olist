@@ -49,7 +49,7 @@ To end a call, send a *PUT* request to `{base_url}/calls/{identifier}/end-call/`
 ```
 {
     "identifier":  // Identifier of the call
-    "timestamp": // The timestamp of when the call has_ended.
+    "timestamp": // Optional - The timestamp of when the call has_ended.
 }
 ```
 
@@ -58,7 +58,7 @@ As response, you will receive a json containing the *duration* and the *cost* of
 
 ## Getting a bill report
 
-To get a bill report, send a *GET* request to `{base_url}/bills/` informing the `?phone` and optionally `&period` params, if `&period` won't be informd, will assume the last closed period.
+To get a bill report, send a *GET* request to `{base_url}/bill/` informing the `?phone` and optionally `&period` params, if `&period` won't be informd, will assume the last closed period.
 
 ## Environment briefing
 
